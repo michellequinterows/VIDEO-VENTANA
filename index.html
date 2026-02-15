@@ -62,40 +62,27 @@ model-viewer {
 <button class="boton-ar" onclick="activarAR()">
   Ver en tu espacio
 </button>
-
 <script>
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
 
-// Esperar a que el modelo cargue
-viewer.addEventListener("load", () => {
+viewer.addEventListener("load", async () => {
 
-  // Esperar a que el video esté listo
-  video.addEventListener("loadeddata", async () => {
+  await video.play();
 
-    try {
-      await video.play();
+  const texture = await viewer.createTexture(video);
 
-      const texture = await viewer.createTexture(video);
+  // Mostrar materiales en consola
+  console.log(viewer.model.materials);
 
-      viewer.model.materials.forEach((material) => {
-        material.pbrMetallicRoughness.setBaseColorTexture(texture);
-      });
+  // Aplicar SOLO al primer material
+  const material = viewer.model.materials[0];
 
-      console.log("Video aplicado correctamente");
-
-    } catch (error) {
-      console.error("Error aplicando video:", error);
-    }
-
-  });
+  material.pbrMetallicRoughness.setBaseColorTexture(texture);
 
 });
-
-function activarAR() {
-  viewer.activateAR();
-}
 </script>
+
 
 </body>
 </html>
