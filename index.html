@@ -1,49 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="utf-8">
-<title>Dama VR</title>
+<meta charset="UTF-8">
+<title>Dama Siglo XIX AR</title>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
 <style>
-  body { margin: 0; overflow: hidden; background: black; }
+body {
+  margin: 0;
+  background: #f2f2f2;
+  font-family: Arial, sans-serif;
+}
+
+model-viewer {
+  width: 100%;
+  height: 100vh;
+}
+
+.boton-ar {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 18px 40px;
+  font-size: 18px;
+  border: none;
+  border-radius: 40px;
+  background: black;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
 </style>
 </head>
+
 <body>
 
-<video id="video" src="dama.mp4" loop autoplay muted playsinline style="display:none"></video>
+<!-- Video oculto -->
+<video id="video" src="dama.mp4" loop muted playsinline autoplay style="display:none"></video>
 
-<script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158/build/three.module.js';
-import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/webxr/VRButton.js';
+<model-viewer
+  id="viewer"
+  src="pantalla.glb"
+  ar
+  ar-modes="scene-viewer quick-look webxr"
+  camera-controls
+  shadow-intensity="1">
+</model-viewer>
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+<button class="boton-ar" onclick="activarAR()">
+  Ver en tu espacio
+</button>
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.xr.enabled = true;
-document.body.appendChild(renderer.domElement);
-document.body.appendChild(VRButton.createButton(renderer));
+<script>
+const viewer = document.getElementById("viewer");
+const video = document.getElementById("video");
 
-camera.position.z = 3;
+viewer.addEventListener("load", async () => {
 
-// Video texture
-const video = document.getElementById('video');
-const texture = new THREE.VideoTexture(video);
+  const material = viewer.model.materials[0];
 
-// Plano holograma
-const geometry = new THREE.PlaneGeometry(2, 3);
-const material = new THREE.MeshBasicMaterial({
-  map: texture,
-  transparent: true
+  const texture = await viewer.createTexture(video);
+
+  material.pbrMetallicRoughness.setBaseColorTexture(texture);
+
 });
 
-const holograma = new THREE.Mesh(geometry, material);
-scene.add(holograma);
-
-// Animación XR
-renderer.setAnimationLoop(() => {
-  renderer.render(scene, camera);
-});
+function activarAR() {
+  viewer.activateAR();
+}
 </script>
 
 </body>
