@@ -37,8 +37,17 @@ model-viewer {
 
 <body>
 
-<!-- Video oculto -->
-<video id="video" src="dama.mp4" loop muted playsinline autoplay style="display:none"></video>
+<!-- VIDEO OCULTO -->
+<video 
+  id="video" 
+  src="dama.mp4" 
+  loop 
+  muted 
+  playsinline 
+  autoplay 
+  crossorigin="anonymous"
+  style="display:none">
+</video>
 
 <model-viewer
   id="viewer"
@@ -46,7 +55,8 @@ model-viewer {
   ar
   ar-modes="scene-viewer quick-look webxr"
   camera-controls
-  shadow-intensity="1">
+  shadow-intensity="1"
+  autoplay>
 </model-viewer>
 
 <button class="boton-ar" onclick="activarAR()">
@@ -57,13 +67,28 @@ model-viewer {
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
 
-viewer.addEventListener("load", async () => {
+// Esperar a que el modelo cargue
+viewer.addEventListener("load", () => {
 
-  const material = viewer.model.materials[0];
+  // Esperar a que el video esté listo
+  video.addEventListener("loadeddata", async () => {
 
-  const texture = await viewer.createTexture(video);
+    try {
+      await video.play();
 
-  material.pbrMetallicRoughness.setBaseColorTexture(texture);
+      const texture = await viewer.createTexture(video);
+
+      viewer.model.materials.forEach((material) => {
+        material.pbrMetallicRoughness.setBaseColorTexture(texture);
+      });
+
+      console.log("Video aplicado correctamente");
+
+    } catch (error) {
+      console.error("Error aplicando video:", error);
+    }
+
+  });
 
 });
 
