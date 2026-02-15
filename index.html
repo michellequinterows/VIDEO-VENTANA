@@ -2,35 +2,22 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Dama Siglo XIX AR</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Video AR</title>
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
 <style>
 body {
   margin: 0;
-  background: #f2f2f2;
-  font-family: Arial, sans-serif;
+  background: black;
+  overflow: hidden;
 }
 
 model-viewer {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
-}
-
-.boton-ar {
-  position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 18px 40px;
-  font-size: 18px;
-  border: none;
-  border-radius: 40px;
-  background: black;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
 </style>
 </head>
@@ -38,51 +25,55 @@ model-viewer {
 <body>
 
 <!-- VIDEO OCULTO -->
-<video 
-  id="video" 
-  src="dama.mp4" 
-  loop 
-  muted 
-  playsinline 
-  autoplay 
+<video
+  id="video"
+  src="dama.mp4"
+  loop
+  muted
+  playsinline
   crossorigin="anonymous"
   style="display:none">
 </video>
 
+<!-- MODELO -->
 <model-viewer
   id="viewer"
   src="pantalla.glb"
   ar
   ar-modes="scene-viewer quick-look webxr"
   camera-controls
-  shadow-intensity="1"
   autoplay>
 </model-viewer>
 
-<button class="boton-ar" onclick="activarAR()">
-  Ver en tu espacio
-</button>
 <script>
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
 
+// Esperar a que cargue el modelo
 viewer.addEventListener("load", async () => {
 
-  await video.play();
+  try {
+    await video.play();
 
-  const texture = await viewer.createTexture(video);
+    const texture = await viewer.createTexture(video);
 
-  // Mostrar materiales en consola
-  console.log(viewer.model.materials);
+    // Aplicar textura al primer material
+    const material = viewer.model.materials[0];
+    material.pbrMetallicRoughness.setBaseColorTexture(texture);
 
-  // Aplicar SOLO al primer material
-  const material = viewer.model.materials[0];
+    console.log("Video aplicado correctamente");
 
-  material.pbrMetallicRoughness.setBaseColorTexture(texture);
+    // Activar AR automáticamente (Android)
+    setTimeout(() => {
+      viewer.activateAR();
+    }, 800);
+
+  } catch (error) {
+    console.error("Error:", error);
+  }
 
 });
 </script>
-
 
 </body>
 </html>
