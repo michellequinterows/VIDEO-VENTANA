@@ -1,42 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Holograma Dama Siglo XIX</title>
-  <style>
-    body { 
-      margin: 0; 
-      overflow: hidden; 
-      background: black;
-    }
-  </style>
+<meta charset="utf-8">
+<title>Dama VR</title>
+<style>
+  body { margin: 0; overflow: hidden; background: black; }
+</style>
 </head>
 <body>
 
-<!-- Video oculto que se usará como textura -->
 <video id="video" src="dama.mp4" loop autoplay muted playsinline style="display:none"></video>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158/build/three.module.js';
+import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.158/examples/jsm/webxr/VRButton.js';
 
-<script>
 const scene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.xr.enabled = true;
 document.body.appendChild(renderer.domElement);
+document.body.appendChild(VRButton.createButton(renderer));
 
-// Cargar video como textura
+camera.position.z = 3;
+
+// Video texture
 const video = document.getElementById('video');
 const texture = new THREE.VideoTexture(video);
 
-// Plano donde se proyecta el video
+// Plano holograma
 const geometry = new THREE.PlaneGeometry(2, 3);
 const material = new THREE.MeshBasicMaterial({
   map: texture,
@@ -46,20 +40,9 @@ const material = new THREE.MeshBasicMaterial({
 const holograma = new THREE.Mesh(geometry, material);
 scene.add(holograma);
 
-camera.position.z = 5;
-
-// Animación
-function animate() {
-  requestAnimationFrame(animate);
+// Animación XR
+renderer.setAnimationLoop(() => {
   renderer.render(scene, camera);
-}
-animate();
-
-// Ajustar tamaño si cambian dimensiones de pantalla
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
 });
 </script>
 
