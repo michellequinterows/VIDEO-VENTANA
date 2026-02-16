@@ -48,20 +48,30 @@ button:hover {
   src="pantalla.glb"
   camera-controls
   shadow-intensity="1"
-  autoplay
   reveal="interaction">
 </model-viewer>
 
 <!-- Botón para aplicar video -->
-<button id="applyVideo">Aplicar Video al Plano</button>
+<button id="applyVideo" disabled>Aplicar Video al Plano</button>
 
 <script>
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
 const button = document.getElementById("applyVideo");
 
+// Esperar a que el modelo cargue
+viewer.addEventListener("load", () => {
+  console.log("Modelo cargado, botón habilitado.");
+  button.disabled = false; // habilitar botón
+});
+
 button.addEventListener("click", async () => {
   try {
+    if (!viewer.model) {
+      console.error("El modelo aún no está listo.");
+      return;
+    }
+
     // Reproducir el video
     video.muted = true;
     await video.play();
