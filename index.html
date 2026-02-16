@@ -3,26 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prueba Cámara</title>
+  <title>Prueba AR MindAR Plano Rojo</title>
+
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <!-- MindAR -->
+  <script src="https://cdn.jsdelivr.net/gh/MindAR-js/aframe/dist/aframe-mindar.js"></script>
+
+  <style>
+    body { margin:0; overflow:hidden; }
+  </style>
 </head>
 <body>
-  <h2>Prueba de Cámara</h2>
-  <video id="cam" autoplay playsinline width="100%" height="auto"></video>
 
-  <script>
-    const video = document.getElementById('cam');
+<a-scene mindar="imageTargetSrc: marker.mind;" embedded color-space="sRGB" vr-mode-ui="enabled: false">
 
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        video.srcObject = stream;
-        console.log("Cámara activada correctamente");
-      } catch (err) {
-        console.error("Error activando cámara:", err);
-      }
-    }
+  <!-- Cámara MindAR -->
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    startCamera();
-  </script>
+  <!-- Plano rojo 4x3 metros -->
+  <a-entity mindar-image-target="targetIndex: 0">
+    <a-plane color="red"
+             width="20"
+             height="15"
+             position="0 2 0"
+             rotation="-90 0 0">
+    </a-plane>
+  </a-entity>
+
+</a-scene>
+
 </body>
 </html>
