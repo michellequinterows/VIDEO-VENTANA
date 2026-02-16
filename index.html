@@ -3,35 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prueba AR MindAR Plano Rojo</title>
+  <title>AR Video Plano 4x3m</title>
 
   <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-  <!-- MindAR -->
-  <script src="https://cdn.jsdelivr.net/gh/MindAR-js/aframe/dist/aframe-mindar.js"></script>
+  <!-- MindAR correcto -->
+  <script src="https://cdn.jsdelivr.net/gh/MindAR-js/aframe/dist/aframe-mindar-image-aframe.min.js"></script>
 
   <style>
     body { margin:0; overflow:hidden; }
+    #playVideoBtn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      padding: 12px 20px;
+      font-size: 16px;
+      background: #ff3d00;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+
+<button id="playVideoBtn">Reproducir Video</button>
 
 <a-scene mindar="imageTargetSrc: marker.mind;" embedded color-space="sRGB" vr-mode-ui="enabled: false">
 
   <!-- Cámara MindAR -->
   <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-  <!-- Plano rojo 4x3 metros -->
+  <!-- Plano 4x3 m con video -->
   <a-entity mindar-image-target="targetIndex: 0">
-    <a-plane color="red"
+    <a-plane id="videoPlane"
              width="20"
              height="15"
              position="0 2 0"
-             rotation="-90 0 0">
+             rotation="-90 0 0"
+             material="shader: flat; src: #videoTexture">
     </a-plane>
   </a-entity>
 
+  <!-- Video -->
+  <a-assets>
+    <video id="videoTexture" src="dama.mp4" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
+  </a-assets>
+
 </a-scene>
+
+<script>
+const videoEl = document.querySelector("#videoTexture");
+const playBtn = document.querySelector("#playVideoBtn");
+
+// Botón solo para activar video y audio (iOS/Chrome requieren interacción del usuario)
+playBtn.addEventListener("click", async () => {
+  try {
+    await videoEl.play();
+    playBtn.style.display = "none";
+  } catch(err) {
+    console.error("Error reproduciendo video:", err);
+  }
+});
+</script>
 
 </body>
 </html>
