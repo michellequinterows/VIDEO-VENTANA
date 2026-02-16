@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video AR con botón</title>
+<title>Prueba Video GLB</title>
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
@@ -17,90 +17,74 @@ body {
   height: 100vh;
   flex-direction: column;
 }
-
 model-viewer {
-  width: 100vw;
+  width: 90vw;
   height: 80vh;
   background: #000;
+  border: 1px solid #333;
 }
-
-#playARButton {
+button {
   margin-top: 20px;
-  padding: 15px 30px;
-  font-size: 18px;
+  padding: 12px 25px;
+  font-size: 16px;
   background-color: #ff3d00;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
 }
-#playARButton:hover {
+button:hover {
   background-color: #ff5722;
 }
 </style>
 </head>
-
 <body>
 
-<!-- VIDEO OCULTO -->
-<video
-  id="video"
-  src="dama.mp4"
-  loop
-  muted
-  playsinline
-  crossorigin="anonymous"
-  style="display:none">
-</video>
+<!-- Video oculto -->
+<video id="video" src="dama.mp4" loop muted playsinline crossorigin="anonymous" style="display:none"></video>
 
-<!-- MODEL VIEWER -->
-<model-viewer
-  id="viewer"
+<!-- Modelo GLB -->
+<model-viewer id="viewer"
   src="pantalla.glb"
-  ios-src="pantalla.usdz"
-  ar
-  ar-modes="scene-viewer quick-look webxr"
   camera-controls
   shadow-intensity="1"
+  autoplay
   reveal="interaction">
 </model-viewer>
 
-<!-- BOTÓN PLAY AR -->
-<button id="playARButton">Play AR</button>
+<!-- Botón para aplicar video -->
+<button id="applyVideo">Aplicar Video al Plano</button>
 
 <script>
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
-const button = document.getElementById("playARButton");
+const button = document.getElementById("applyVideo");
 
 button.addEventListener("click", async () => {
   try {
-    // Reproducir el video automáticamente
+    // Reproducir el video
     video.muted = true;
     await video.play();
 
     // Crear textura desde el video
     const texture = await viewer.createTexture(video);
 
-    // Aplicar al material correcto: "Material.005"
-    const material = viewer.model.materials.find(mat => mat.name === "Material.005");
-
+    // Buscar material del plano
+    const material = viewer.model.materials.find(mat => mat.name === "Material.006");
     if (!material) {
-      console.error("No se encontró el material 'Material.005'.");
+      console.error("No se encontró el material 'Material.006'");
       return;
     }
 
+    // Aplicar textura de video
     material.pbrMetallicRoughness.setBaseColorTexture(texture);
     material.pbrMetallicRoughness.setMetallicFactor(0);
     material.pbrMetallicRoughness.setRoughnessFactor(1);
 
-    console.log("Video aplicado correctamente al material de la pantalla.");
-
-    // Abrir AR
-    viewer.activateAR();
+    console.log("Video aplicado correctamente al material del plano.");
 
   } catch (error) {
-    console.error("Error aplicando video o abriendo AR:", error);
+    console.error("Error aplicando video:", error);
   }
 });
 </script>
