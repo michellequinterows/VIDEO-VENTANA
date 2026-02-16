@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/gh/MindAR-js/aframe/dist/aframe-mindar.js"></script>
 
   <style>
-    body { margin:0; overflow:hidden; }
+    body { margin: 0; overflow: hidden; }
     #playVideoBtn {
       position: fixed;
       bottom: 20px;
@@ -37,14 +37,14 @@
   <!-- Cámara MindAR -->
   <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-  <!-- Plano 4x3 metros a tamaño real -->
+  <!-- Plano 4x3 m a tamaño real -->
   <a-entity mindar-image-target="targetIndex: 0">
-    <a-plane id="videoPlane" 
-             position="0 2 0" 
-             rotation="-90 0 0" 
-             width="20"   <!-- ancho relativo al marcador físico -->
-             height="15"  <!-- alto relativo al marcador físico -->
-             material="shader: flat; src: #videoTexture;">
+    <a-plane id="videoPlane"
+             position="0 2 0"
+             rotation="-90 0 0"
+             width="20"
+             height="15"
+             material="src: #videoTexture">
     </a-plane>
   </a-entity>
 
@@ -59,9 +59,13 @@
 const videoEl = document.querySelector("#videoTexture");
 const playBtn = document.querySelector("#playVideoBtn");
 
-playBtn.addEventListener("click", () => {
-  videoEl.play();
-  playBtn.style.display = "none"; // ocultar el botón
+playBtn.addEventListener("click", async () => {
+  try {
+    await videoEl.play();       // Reproducir video con audio
+    playBtn.style.display = "none"; // Ocultar botón
+  } catch(err) {
+    console.error("Error reproduciendo video:", err);
+  }
 });
 </script>
 
