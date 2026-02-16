@@ -7,20 +7,27 @@
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="./mindar-image-aframe.prod.js"></script>
   <style>
-    body { margin: 0; overflow: hidden; }
+    body { margin: 0; overflow: hidden; background: #000; }
     #startBtn {
       position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 9999; padding: 15px 30px;
+      z-index: 9999; padding: 20px 40px;
       font-size: 20px; background: #c0392b;
       color: #fff; border: none; border-radius: 50px; cursor: pointer;
+    }
+    #status {
+      position: fixed; bottom: 10px; left: 10px;
+      color: white; z-index: 10000; font-family: sans-serif; font-size: 12px;
     }
   </style>
 </head>
 <body>
+  <div id="status">Estado: Esperando...</div>
   <button id="startBtn">Explorar en Realidad Aumentada</button>
+
   <a-scene 
-    mindar-image="imageTargetSrc: ./marker.mind; autoStart: false;" 
+    id="mainScene"
+    mindar-image="imageTargetSrc: ./marker.mind; autoStart: false; uiLoading: no; uiScanning: no;" 
     embedded color-space="sRGB" 
     renderer="colorManagement: true, physicallyCorrectLights" 
     vr-mode-ui="enabled: false" 
@@ -33,21 +40,38 @@
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#pantallaModel" scale="1 1 1" position="0 0 0" rotation="0 0 0"></a-gltf-model>
+    <a-entity id="target0" mindar-image-target="targetIndex: 0">
+      <a-gltf-model src="#pantallaModel" scale="1 1 1" position="0 0 0"></a-gltf-model>
       <a-plane width="4" height="3" position="0 0 0.1" material="src: #damaVideo; shader: flat; transparent: true;"></a-plane>
     </a-entity>
   </a-scene>
 
   <script>
     const startBtn = document.querySelector("#startBtn");
+    const status = document.querySelector("#status");
     const sceneEl = document.querySelector("a-scene");
     const videoEl = document.querySelector("#damaVideo");
 
     startBtn.addEventListener("click", () => {
-      sceneEl.systems['mindar-image-system'].start();
-      videoEl.play();
-      startBtn.style.display = "none";
+      status.innerText = "Iniciando RA...";
+      try {
+        const arSystem = sceneEl.systems['mindar-image-system'];
+        if (arSystem) {
+          arSystem.start(); // Esto activa la cámara
+          videoEl.play();
+          startBtn.style.display = "none";
+          status.innerText = "RA Activa. Busca el marcador.";
+        } else {
+          status.innerText = "Error: Sistema RA no encontrado.";
+        }
+      } catch (e) {
+        status.innerText = "Error técnico: " + e.message;
+      }
+    });
+
+    // Detectar si el marcador se encuentra
+    document.querySelector('#target0').addEventListener("targetFound", event => {
+      status.innerText = "¡Marcador encontrado!";
     });
   </script>
 </body>
