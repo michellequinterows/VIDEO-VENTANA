@@ -1,51 +1,51 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     <style>
-        #errorLog {
-            position: fixed; top: 10px; left: 10px; z-index: 10000;
-            background: rgba(0,0,0,0.8); color: white; padding: 10px;
-            font-family: monospace; font-size: 12px; max-width: 90%;
-        }
+      #debug-log {
+        position: fixed; top: 10px; left: 10px; z-index: 999;
+        background: rgba(0,0,0,0.8); color: white; padding: 10px;
+        font-family: monospace; font-size: 12px; max-width: 90%;
+      }
     </style>
-</head>
-<body>
-    <div id="errorLog">Estado: Iniciando...</div>
+  </head>
+  <body>
+    <div id="debug-log">Estado: Esperando...</div>
 
     <a-scene 
-        mindar-image="imageTargetSrc: ./marker.mind; autoStart: true;" 
-        embedded vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false">
-        
-        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      id="escena"
+      mindar-image="imageTargetSrc: ./marker.mind; autoStart: true;" 
+      embedded vr-mode-ui="enabled: false" 
+      device-orientation-permission-ui="enabled: false">
+      
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-        <a-entity mindar-image-target="targetIndex: 0">
-            <a-box position="0 0 0" material="color: blue; opacity: 0.5"></a-box>
-        </a-entity>
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-plane color="blue" opactiy="0.5" position="0 0 0"></a-plane>
+      </a-entity>
     </a-scene>
 
     <script>
-        const log = document.getElementById('errorLog');
-        const sceneEl = document.querySelector('a-scene');
+      const log = document.getElementById('debug-log');
+      const escena = document.getElementById('escena');
 
-        // 1. Verificar si la escena carga
-        sceneEl.addEventListener('loaded', () => {
-            log.innerHTML += "<br>✅ Escena A-Frame cargada";
-        });
+      // Avisar si la escena cargó
+      escena.addEventListener('loaded', () => {
+        log.innerHTML += "<br>✅ A-Frame cargado";
+      });
 
-        // 2. Verificar errores de MindAR
-        sceneEl.addEventListener("arError", (event) => {
-            log.innerHTML += "<br>❌ ERROR AR: " + event.detail.error;
-            log.style.color = "red";
-        });
+      // Avisar si hay error de MindAR (ej. no encuentra el archivo .mind)
+      escena.addEventListener("arError", (event) => {
+        log.innerHTML += "<br>❌ ERROR AR: " + event.detail.error;
+      });
 
-        // 3. Verificar si el sistema está listo
-        sceneEl.addEventListener("arReady", () => {
-            log.innerHTML += "<br>🚀 MindAR está listo";
-        });
+      // Avisar cuando MindAR está listo
+      escena.addEventListener("arReady", () => {
+        log.innerHTML += "<br>🚀 MindAR listo";
+      });
     </script>
-</body>
+  </body>
 </html>
