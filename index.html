@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Video AR</title>
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -11,8 +10,7 @@
 <style>
 body {
   margin: 0;
-  background: black;
-  overflow: hidden;
+  background: #000;
 }
 
 model-viewer {
@@ -35,21 +33,20 @@ model-viewer {
   style="display:none">
 </video>
 
-<!-- MODELO -->
+<!-- MODEL VIEWER -->
 <model-viewer
   id="viewer"
   src="pantalla.glb"
   ar
   ar-modes="scene-viewer quick-look webxr"
   camera-controls
-  autoplay>
+  shadow-intensity="1">
 </model-viewer>
 
 <script>
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
 
-// Esperar a que cargue el modelo
 viewer.addEventListener("load", async () => {
 
   try {
@@ -57,19 +54,13 @@ viewer.addEventListener("load", async () => {
 
     const texture = await viewer.createTexture(video);
 
-    // Aplicar textura al primer material
     const material = viewer.model.materials[0];
     material.pbrMetallicRoughness.setBaseColorTexture(texture);
 
     console.log("Video aplicado correctamente");
 
-    // Activar AR automáticamente (Android)
-    setTimeout(() => {
-      viewer.activateAR();
-    }, 800);
-
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error aplicando video:", error);
   }
 
 });
