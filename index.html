@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pantalla AR con Video y Audio</title>
+<title>Prueba Imagen en Plano AR</title>
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
@@ -16,9 +16,6 @@ button:hover { background:#ff5722; }
 </head>
 <body>
 
-<!-- Video oculto -->
-<video id="video" src="dama.mp4" loop playsinline crossorigin="anonymous" style="display:none"></video>
-
 <!-- Modelo GLB con AR habilitado -->
 <model-viewer id="viewer"
   src="pantalla.glb"
@@ -29,52 +26,41 @@ button:hover { background:#ff5722; }
   exposure="1">
 </model-viewer>
 
-<button id="playVideoAudio">Reproducir Video con Audio</button>
+<button id="applyImage">Aplicar Imagen en Plano</button>
 
 <script>
 const viewer = document.getElementById("viewer");
-const video = document.getElementById("video");
-const button = document.getElementById("playVideoAudio");
+const button = document.getElementById("applyImage");
 
 button.addEventListener("click", async () => {
   try {
-    video.muted = false; // o true si quieres autoplay sin audio
-    await video.play();
+    // Crear objeto imagen
+    const img = new Image();
+    img.src = "damaimg.png"; // tu imagen de prueba
+    img.crossOrigin = "anonymous";
 
-    const texture = await viewer.createTexture(video);
+    img.onload = async () => {
+      // Crear textura desde la imagen
+      const texture = await viewer.createTexture(img);
 
-    // 🔹 Hack de prueba: aplicar video a todos los materiales
-    viewer.model.materials.forEach(mat => {
-      mat.pbrMetallicRoughness.setBaseColorTexture(texture);
-      mat.pbrMetallicRoughness.setMetallicFactor(0);
-      mat.pbrMetallicRoughness.setRoughnessFactor(1);
-    });
+      // Buscar el material del plano
+      const material = viewer.model.materials.find(mat => mat.name === "Material.006");
 
-    console.log("Video aplicado a todos los materiales. Ahora revisa si se ve en el plano.");
+      if (!material) {
+        console.error("No se encontró 'Material.006'");
+        return;
+      }
 
-    if(viewer.canActivateAR) {
-      viewer.activateAR();
+      // Aplicar la textura de imagen
+      material.pbrMetallicRoughness.setBaseColorTexture(texture);
+      material.pbrMetallicRoughness.setMetallicFactor(0);
+      material.pbrMetallicRoughness.setRoughnessFactor(1);
+
+      console.log("Imagen aplicada correctamente al plano.");
     }
 
   } catch (e) {
-    console.error("Error aplicando video:", e);
-  }
-});
-    }
-
-    material.pbrMetallicRoughness.setBaseColorTexture(texture);
-    material.pbrMetallicRoughness.setMetallicFactor(0);
-    material.pbrMetallicRoughness.setRoughnessFactor(1);
-
-    console.log("Video con audio aplicado correctamente en el plano.");
-
-    // Iniciar AR automáticamente si se puede
-    if (viewer.canActivateAR) {
-      viewer.activateAR();
-    }
-
-  } catch (e) {
-    console.error("Error aplicando video con audio:", e);
+    console.error("Error aplicando la imagen:", e);
   }
 });
 </script>
