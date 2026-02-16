@@ -1,37 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video AR</title>
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+<style>
+body {
+  margin: 0;
+  background: #000;
+}
+
+model-viewer {
+  width: 100vw;
+  height: 100vh;
+}
+</style>
+</head>
+
+<body>
+
+<!-- VIDEO OCULTO -->
+<video
+  id="video"
+  src="dama.mp4"
+  loop
+  muted
+  playsinline
+  crossorigin="anonymous"
+  style="display:none">
+</video>
+
+<!-- MODEL VIEWER -->
+<model-viewer
+  id="viewer"
+  src="pantalla.glb"
+  ar
+  ar-modes="webxr scene-viewer"
+  camera-controls
+  shadow-intensity="1"
+  autoplay>
+</model-viewer>
+
 <script>
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
 
 viewer.addEventListener("load", async () => {
-
   try {
-
-    // Necesario para móviles
+    // Asegurar que el video está listo y sin sonido
     video.muted = true;
-    video.play();
+    await video.play();
 
     // Crear textura desde el video
     const texture = await viewer.createTexture(video);
 
-    // Buscar el material por nombre (CAMBIA "Pantalla" por el nombre real)
-    const material = viewer.model.materials.find(
-      (mat) => mat.name === "Pantalla"
-    );
+    // Tomar el primer material del modelo
+    const material = viewer.model.materials[0];
 
     if (!material) {
-      console.log("No se encontró el material Pantalla");
+      console.error("No se encontró ningún material en el modelo.");
       return;
     }
 
+    // Aplicar la textura del video
     material.pbrMetallicRoughness.setBaseColorTexture(texture);
     material.pbrMetallicRoughness.setMetallicFactor(0);
     material.pbrMetallicRoughness.setRoughnessFactor(1);
 
-    console.log("Video aplicado correctamente");
+    console.log("Video aplicado correctamente al primer material.");
 
   } catch (error) {
     console.error("Error aplicando video:", error);
   }
-
 });
 </script>
+
+</body>
+</html>
