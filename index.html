@@ -3,98 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prueba Video GLB</title>
+<title>Prueba Video GLB Simple</title>
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
 <style>
-body {
-  margin: 0;
-  background: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  flex-direction: column;
-}
-model-viewer {
-  width: 90vw;
-  height: 80vh;
-  background: #000;
-  border: 1px solid #333;
-}
-button {
-  margin-top: 20px;
-  padding: 12px 25px;
-  font-size: 16px;
-  background-color: #ff3d00;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #ff5722;
-}
+body { margin:0; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; }
+model-viewer { width:90vw; height:80vh; background:#000; }
+button { margin-top:20px; padding:10px 20px; font-size:16px; cursor:pointer; }
 </style>
 </head>
 <body>
 
-<!-- Video oculto -->
 <video id="video" src="dama.mp4" loop muted playsinline crossorigin="anonymous" style="display:none"></video>
 
-<!-- Modelo GLB -->
-<model-viewer id="viewer"
-  src="pantalla.glb"
-  camera-controls
-  shadow-intensity="1"
-  reveal="interaction">
-</model-viewer>
+<model-viewer id="viewer" src="pantalla.glb" camera-controls shadow-intensity="1"></model-viewer>
 
-<!-- Botón para aplicar video -->
-<button id="applyVideo" disabled>Aplicar Video al Plano</button>
+<button id="applyVideo">Aplicar Video</button>
 
 <script>
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
 const button = document.getElementById("applyVideo");
 
-// Esperar a que el modelo cargue
-viewer.addEventListener("load", () => {
-  console.log("Modelo cargado, botón habilitado.");
-  button.disabled = false; // habilitar botón
-});
-
 button.addEventListener("click", async () => {
   try {
-    if (!viewer.model) {
-      console.error("El modelo aún no está listo.");
-      return;
-    }
+    console.log("Botón presionado");
 
-    // Reproducir el video
+    // Asegúrate que el video se pueda reproducir
     video.muted = true;
     await video.play();
 
-    // Crear textura desde el video
+    // Crear textura
     const texture = await viewer.createTexture(video);
 
-    // Buscar material del plano
+    // Buscar el material correcto
     const material = viewer.model.materials.find(mat => mat.name === "Material.006");
     if (!material) {
-      console.error("No se encontró el material 'Material.006'");
+      console.error("No se encontró 'Material.006'");
       return;
     }
 
-    // Aplicar textura de video
     material.pbrMetallicRoughness.setBaseColorTexture(texture);
     material.pbrMetallicRoughness.setMetallicFactor(0);
     material.pbrMetallicRoughness.setRoughnessFactor(1);
 
-    console.log("Video aplicado correctamente al material del plano.");
+    console.log("Video aplicado al plano correctamente");
 
-  } catch (error) {
-    console.error("Error aplicando video:", error);
+  } catch(e) {
+    console.error("Error:", e);
   }
 });
 </script>
