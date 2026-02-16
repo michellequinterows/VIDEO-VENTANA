@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Museo AR - Ajuste de Escala Preciso</title>
+  <title>Museo AR - Escala 1.65 y Estabilidad Pro</title>
   
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
@@ -23,7 +23,7 @@
   <button id="startBtn">Abrir Ventana del Tiempo</button>
 
   <a-scene 
-    mindar-image="imageTargetSrc: ./marker.mind; autoStart: false; missTolerance: 0; filterMinCF: 0.000001; filterBeta: 10;" 
+    mindar-image="imageTargetSrc: ./marker.mind; autoStart: false; missTolerance: 0; filterMinCF: 0.0000001; filterBeta: 100;" 
     embedded 
     renderer="colorManagement: true, antialias: true, alpha: true" 
     vr-mode-ui="enabled: false" 
@@ -40,8 +40,8 @@
         id="videoPlane" 
         width="0.85" 
         height="1.1" 
-        scale="1.85 1.85 1.85"
-        position="0 0 0.01" 
+        scale="1.65 1.65 1.65"
+        position="0 0 0.02" 
         material="src: #damaVideo; shader: flat; transparent: true; alphaTest: 0.5;">
       </a-plane>
     </a-entity>
