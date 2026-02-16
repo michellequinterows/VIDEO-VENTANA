@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Ventana Histórica - Seguimiento Extendido</title>
+  <title>Ventana Histórica - Máximo Alcance</title>
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
   <style>
@@ -23,8 +23,9 @@
     mindar-image="imageTargetSrc: ./marker.mind; 
                   autoStart: false; 
                   maxTrack: 1; 
-                  missTolerance: 1000; 
-                  filterMinCF: 0.0001; 
+                  missTolerance: 10000; 
+                  warmupTolerance: 0;
+                  filterMinCF: 0.00001; 
                   filterBeta: 0.001;" 
     embedded renderer="colorManagement: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     
