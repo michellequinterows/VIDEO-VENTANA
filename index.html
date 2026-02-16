@@ -7,32 +7,32 @@
 
   <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-  <!-- MindAR correcto -->
+  <!-- MindAR -->
   <script src="https://cdn.jsdelivr.net/gh/MindAR-js/aframe/dist/aframe-mindar-image-aframe.min.js"></script>
 
   <style>
     body { margin:0; overflow:hidden; }
-    #playVideoBtn {
+    #startBtn {
       position: fixed;
-      bottom: 20px;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
       z-index: 999;
-      padding: 12px 20px;
-      font-size: 16px;
+      padding: 15px 25px;
+      font-size: 18px;
       background: #ff3d00;
       color: #fff;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-<button id="playVideoBtn">Reproducir Video</button>
+<button id="startBtn">Iniciar AR</button>
 
-<a-scene mindar="imageTargetSrc: marker.mind;" embedded color-space="sRGB" vr-mode-ui="enabled: false">
+<a-scene id="arScene" mindar="imageTargetSrc: marker.mind;" embedded color-space="sRGB" vr-mode-ui="enabled: false" visible="false">
 
   <!-- Cámara MindAR -->
   <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -44,7 +44,7 @@
              height="15"
              position="0 2 0"
              rotation="-90 0 0"
-             material="shader: flat; src: #videoTexture">
+             material="shader: flat; color:red; src: #videoTexture">
     </a-plane>
   </a-entity>
 
@@ -56,16 +56,28 @@
 </a-scene>
 
 <script>
+const startBtn = document.querySelector("#startBtn");
+const arScene = document.querySelector("#arScene");
 const videoEl = document.querySelector("#videoTexture");
-const playBtn = document.querySelector("#playVideoBtn");
 
-// Botón solo para activar video y audio (iOS/Chrome requieren interacción del usuario)
-playBtn.addEventListener("click", async () => {
+startBtn.addEventListener("click", async () => {
   try {
+    // Mostrar la escena AR
+    arScene.setAttribute("visible", true);
+
+    // Iniciar MindAR
+    const mindarComponent = arScene.components['mindar-image'];
+    if(mindarComponent) {
+      await mindarComponent.start();
+    }
+
+    // Reproducir video/audio
     await videoEl.play();
-    playBtn.style.display = "none";
-  } catch(err) {
-    console.error("Error reproduciendo video:", err);
+
+    // Ocultar botón
+    startBtn.style.display = "none";
+  } catch (err) {
+    console.error("Error iniciando AR:", err);
   }
 });
 </script>
