@@ -75,26 +75,32 @@ const button = document.getElementById("playARButton");
 
 button.addEventListener("click", async () => {
   try {
-    // Reproducir video
+    // Reproducir el video automáticamente
     video.muted = true;
     await video.play();
 
-    // Aplicar video al primer material del GLB
+    // Crear textura desde el video
     const texture = await viewer.createTexture(video);
-    const material = viewer.model.materials[0];
-    if (material) {
-      material.pbrMetallicRoughness.setBaseColorTexture(texture);
-      material.pbrMetallicRoughness.setMetallicFactor(0);
-      material.pbrMetallicRoughness.setRoughnessFactor(1);
-      console.log("Video aplicado correctamente al modelo 3D.");
+
+    // Aplicar al material correcto: "Material.005"
+    const material = viewer.model.materials.find(mat => mat.name === "Material.005");
+
+    if (!material) {
+      console.error("No se encontró el material 'Material.005'.");
+      return;
     }
 
-    // Activar AR
+    material.pbrMetallicRoughness.setBaseColorTexture(texture);
+    material.pbrMetallicRoughness.setMetallicFactor(0);
+    material.pbrMetallicRoughness.setRoughnessFactor(1);
+
+    console.log("Video aplicado correctamente al material de la pantalla.");
+
+    // Abrir AR
     viewer.activateAR();
-    console.log("Se ha abierto AR correctamente.");
 
   } catch (error) {
-    console.error("Error al reproducir video o abrir AR:", error);
+    console.error("Error aplicando video o abriendo AR:", error);
   }
 });
 </script>
