@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Museo AR - Rigidez Absoluta 1.23</title>
+  <title>Museo AR - Rigidez Absoluta</title>
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
   <style>
@@ -20,9 +20,9 @@
   <button id="startBtn">Abrir Ventana del Tiempo</button>
 
   <a-scene 
-    mindar-image="imageTargetSrc: ./marker.mind; autoStart: false; missTolerance: 0; filterMinCF: 1.0; filterBeta: 10000; warmupTolerance: 15;" 
+    mindar-image="imageTargetSrc: ./marker.mind; autoStart: false; missTolerance: 0; filterMinCF: 0.1; filterBeta: 0; warmupTolerance: 0;" 
     embedded 
-    renderer="colorManagement: true, antialias: true, alpha: true, precision: high" 
+    renderer="colorManagement: true, antialias: false, alpha: true, precision: low" 
     vr-mode-ui="enabled: false" 
     device-orientation-permission-ui="enabled: false">
     
@@ -38,7 +38,7 @@
         width="0.85" 
         height="1.1" 
         scale="1.23 1.23 1.23"
-        position="0 0 0.1" 
+        position="0 0 0.01" 
         material="src: #damaVideo; shader: flat; transparent: true; alphaTest: 0.5;">
       </a-plane>
     </a-entity>
