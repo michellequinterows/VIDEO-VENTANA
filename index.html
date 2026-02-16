@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pantalla AR con Video</title>
+<title>Pantalla AR con Video y Audio</title>
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
@@ -17,7 +17,7 @@ button:hover { background:#ff5722; }
 <body>
 
 <!-- Video oculto -->
-<video id="video" src="dama.mp4" loop muted playsinline crossorigin="anonymous" style="display:none"></video>
+<video id="video" src="dama.mp4" loop playsinline crossorigin="anonymous" style="display:none"></video>
 
 <!-- Modelo GLB con AR habilitado -->
 <model-viewer id="viewer"
@@ -29,17 +29,19 @@ button:hover { background:#ff5722; }
   exposure="1">
 </model-viewer>
 
-<button id="playVideo">Reproducir Video en AR</button>
+<button id="playVideoAudio">Reproducir Video con Audio</button>
 
 <script>
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
-const button = document.getElementById("playVideo");
+const button = document.getElementById("playVideoAudio");
 
 button.addEventListener("click", async () => {
   try {
-    // Reproducir el video
-    video.muted = true;
+    console.log("Botón presionado para audio");
+
+    // Reproducir video con audio
+    video.muted = false; // activar audio
     await video.play();
 
     // Crear textura desde el video
@@ -56,15 +58,15 @@ button.addEventListener("click", async () => {
     material.pbrMetallicRoughness.setMetallicFactor(0);
     material.pbrMetallicRoughness.setRoughnessFactor(1);
 
-    console.log("Video aplicado correctamente en el plano.");
+    console.log("Video con audio aplicado correctamente en el plano.");
 
-    // Opcional: iniciar AR automáticamente
+    // Iniciar AR automáticamente si se puede
     if (viewer.canActivateAR) {
       viewer.activateAR();
     }
 
   } catch (e) {
-    console.error("Error aplicando video:", e);
+    console.error("Error aplicando video con audio:", e);
   }
 });
 </script>
