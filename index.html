@@ -1,48 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video AR</title>
-
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
-<style>
-body {
-  margin: 0;
-  background: #000;
-}
-
-model-viewer {
-  width: 100vw;
-  height: 100vh;
-}
-</style>
-</head>
-
-<body>
-
-<!-- VIDEO OCULTO -->
-<video
-  id="video"
-  src="dama.mp4"
-  loop
-  muted
-  playsinline
-  crossorigin="anonymous"
-  style="display:none">
-</video>
-
-<!-- MODEL VIEWER -->
-<model-viewer
-  id="viewer"
-  src="pantalla.glb"
-  ar
-  ar-modes="scene-viewer quick-look webxr"
-  camera-controls
-  shadow-intensity="1">
-</model-viewer>
-
 <script>
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
@@ -50,12 +5,27 @@ const video = document.getElementById("video");
 viewer.addEventListener("load", async () => {
 
   try {
-    await video.play();
 
+    // Necesario para móviles
+    video.muted = true;
+    video.play();
+
+    // Crear textura desde el video
     const texture = await viewer.createTexture(video);
 
-    const material = viewer.model.materials[0];
+    // Buscar el material por nombre (CAMBIA "Pantalla" por el nombre real)
+    const material = viewer.model.materials.find(
+      (mat) => mat.name === "Pantalla"
+    );
+
+    if (!material) {
+      console.log("No se encontró el material Pantalla");
+      return;
+    }
+
     material.pbrMetallicRoughness.setBaseColorTexture(texture);
+    material.pbrMetallicRoughness.setMetallicFactor(0);
+    material.pbrMetallicRoughness.setRoughnessFactor(1);
 
     console.log("Video aplicado correctamente");
 
@@ -65,6 +35,3 @@ viewer.addEventListener("load", async () => {
 
 });
 </script>
-
-</body>
-</html>
