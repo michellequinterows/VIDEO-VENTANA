@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video AR</title>
+<title>Video AR con botón</title>
 
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
@@ -11,11 +11,31 @@
 body {
   margin: 0;
   background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
 }
 
 model-viewer {
   width: 100vw;
-  height: 100vh;
+  height: 80vh;
+  background: #000;
+}
+
+#playARButton {
+  margin-top: 20px;
+  padding: 15px 30px;
+  font-size: 18px;
+  background-color: #ff3d00;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+#playARButton:hover {
+  background-color: #ff5722;
 }
 </style>
 </head>
@@ -37,43 +57,44 @@ model-viewer {
 <model-viewer
   id="viewer"
   src="pantalla.glb"
+  ios-src="pantalla.usdz"
   ar
-  ar-modes="webxr scene-viewer"
+  ar-modes="scene-viewer quick-look webxr"
   camera-controls
   shadow-intensity="1"
-  autoplay>
+  reveal="interaction">
 </model-viewer>
+
+<!-- BOTÓN PLAY AR -->
+<button id="playARButton">Play AR</button>
 
 <script>
 const viewer = document.getElementById("viewer");
 const video = document.getElementById("video");
+const button = document.getElementById("playARButton");
 
-viewer.addEventListener("load", async () => {
+button.addEventListener("click", async () => {
   try {
-    // Asegurar que el video está listo y sin sonido
+    // Reproducir video
     video.muted = true;
     await video.play();
 
-    // Crear textura desde el video
+    // Aplicar video al primer material del GLB
     const texture = await viewer.createTexture(video);
-
-    // Tomar el primer material del modelo
     const material = viewer.model.materials[0];
-
-    if (!material) {
-      console.error("No se encontró ningún material en el modelo.");
-      return;
+    if (material) {
+      material.pbrMetallicRoughness.setBaseColorTexture(texture);
+      material.pbrMetallicRoughness.setMetallicFactor(0);
+      material.pbrMetallicRoughness.setRoughnessFactor(1);
+      console.log("Video aplicado correctamente al modelo 3D.");
     }
 
-    // Aplicar la textura del video
-    material.pbrMetallicRoughness.setBaseColorTexture(texture);
-    material.pbrMetallicRoughness.setMetallicFactor(0);
-    material.pbrMetallicRoughness.setRoughnessFactor(1);
-
-    console.log("Video aplicado correctamente al primer material.");
+    // Activar AR
+    viewer.activateAR();
+    console.log("Se ha abierto AR correctamente.");
 
   } catch (error) {
-    console.error("Error aplicando video:", error);
+    console.error("Error al reproducir video o abrir AR:", error);
   }
 });
 </script>
