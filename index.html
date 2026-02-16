@@ -3,83 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AR Video Plano 4x3m</title>
+  <title>Museo Siglo XIX - AR</title>
 
-  <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-  <!-- MindAR -->
-  <script src="https://cdn.jsdelivr.net/gh/MindAR-js/aframe/dist/aframe-mindar-image-aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
-    body { margin:0; overflow:hidden; }
+    body { margin: 0; overflow: hidden; }
     #startBtn {
-      position: fixed;
-      top: 50%;
-      left: 50%;
+      position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 999;
-      padding: 15px 25px;
-      font-size: 18px;
-      background: #ff3d00;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      z-index: 9999; padding: 15px 30px;
+      font-size: 20px; background: #c0392b; /* Rojo elegante */
+      color: #fff; border: none; border-radius: 50px; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
 
-<button id="startBtn">Iniciar AR</button>
+<button id="startBtn">Explorar en Realidad Aumentada</button>
 
-<a-scene id="arScene" mindar="imageTargetSrc: marker.mind;" embedded color-space="sRGB" vr-mode-ui="enabled: false" visible="false">
+<a-scene 
+  mindar-image="imageTargetSrc: ./marker.mind; autoStart: false;" 
+  embedded color-space="sRGB" 
+  renderer="colorManagement: true, physicallyCorrectLights" 
+  vr-mode-ui="enabled: false" 
+  device-orientation-permission-ui="enabled: false">
+  
+  <a-assets>
+    <video id="damaVideo" src="dama.mp4" preload="auto" loop="true" 
+           crossorigin="anonymous" playsinline webkit-playsinline></video>
+    
+    <a-asset-item id="pantallaModel" src="pantalla.glb"></a-asset-item>
+  </a-assets>
 
-  <!-- Cámara MindAR -->
   <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-  <!-- Plano 4x3 m con video -->
   <a-entity mindar-image-target="targetIndex: 0">
-    <a-plane id="videoPlane"
-             width="20"
-             height="15"
-             position="0 2 0"
-             rotation="-90 0 0"
-             material="shader: flat; color:red; src: #videoTexture">
-    </a-plane>
-  </a-entity>
+    
+    <a-gltf-model src="#pantallaModel" 
+                  scale="1 1 1" 
+                  position="0 0 0" 
+                  rotation="0 0 0">
+    </a-gltf-model>
 
-  <!-- Video -->
-  <a-assets>
-    <video id="videoTexture" src="dama.mp4" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
-  </a-assets>
+    <a-plane id="videoPlane" 
+             width="4" height="3" 
+             position="0 0 0.1" 
+             material="src: #damaVideo; shader: flat; transparent: true;">
+    </a-plane>
+
+  </a-entity>
 
 </a-scene>
 
 <script>
-const startBtn = document.querySelector("#startBtn");
-const arScene = document.querySelector("#arScene");
-const videoEl = document.querySelector("#videoTexture");
+  const startBtn = document.querySelector("#startBtn");
+  const sceneEl = document.querySelector("a-scene");
+  const videoEl = document.querySelector("#damaVideo");
 
-startBtn.addEventListener("click", async () => {
-  try {
-    // Mostrar la escena AR
-    arScene.setAttribute("visible", true);
-
-    // Iniciar MindAR
-    const mindarComponent = arScene.components['mindar-image'];
-    if(mindarComponent) {
-      await mindarComponent.start();
-    }
-
-    // Reproducir video/audio
-    await videoEl.play();
-
-    // Ocultar botón
+  startBtn.addEventListener("click", () => {
+    // Inicia MindAR
+    sceneEl.systems['mindar-image-system'].start();
+    
+    // Inicia el video (necesario por políticas de navegador)
+    videoEl.play();
+    
+    // Oculta el botón de inicio
     startBtn.style.display = "none";
-  } catch (err) {
-    console.error("Error iniciando AR:", err);
-  }
-});
+  });
 </script>
 
 </body>
