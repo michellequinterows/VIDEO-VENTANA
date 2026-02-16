@@ -3,68 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Museo AR - Pantalla Completa</title>
-  
+  <title>Ventana Siglo XIX - Escala Real</title>
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-
   <style>
-    /* Eliminamos márgenes y obligamos al contenido a llenar la pantalla */
-    body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #000;
-    }
-
-    /* Estilo del botón de inicio */
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
     #startBtn {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-      padding: 20px 40px;
-      background: #c0392b;
-      color: white;
-      border: none;
-      border-radius: 50px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    }
-
-    /* Forzamos que el video de MindAR ignore recortes extraños */
-    video {
-      object-fit: cover !important;
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      z-index: 9999; padding: 20px 40px; background: #c0392b;
+      color: white; border: none; border-radius: 50px; font-size: 1.2rem; cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <button id="startBtn">INICIAR EXPERIENCIA</button>
+  <button id="startBtn">INICIAR VENTANA HISTÓRICA</button>
 
   <a-scene 
-    mindar-image="imageTargetSrc: ./marker.mind; autoStart: false; uiLoading: yes; uiScanning: yes; filterMinCF:0.0001; filterBeta: 0.001;" 
-    embedded 
-    color-space="sRGB" 
-    renderer="colorManagement: true, physicallyCorrectLights" 
-    vr-mode-ui="enabled: false" 
-    device-orientation-permission-ui="enabled: false">
+    mindar-image="imageTargetSrc: ./marker.mind; autoStart: false; filterMinCF:0.0001; filterBeta: 0.001;" 
+    embedded renderer="colorManagement: true" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     
     <a-assets>
       <video id="damaVideo" src="dama.mp4" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
-      <a-asset-item id="pantallaModel" src="pantalla.glb"></a-asset-item>
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#pantallaModel" position="0 0 0" rotation="0 0 0" scale="1 1 1"></a-gltf-model>
-      <a-plane width="4" height="3" position="0 0 0.1" material="src: #damaVideo; shader: flat; transparent: true;"></a-plane>
+      <a-plane 
+        id="videoPlane" 
+        width="2.5" height="3" 
+        position="0 0 0" 
+        scale="10 10 10"
+        material="src: #damaVideo; shader: flat; transparent: true;">
+      </a-plane>
     </a-entity>
 
   </a-scene>
