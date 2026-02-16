@@ -38,20 +38,28 @@ const button = document.getElementById("playVideoAudio");
 
 button.addEventListener("click", async () => {
   try {
-    console.log("Botón presionado para audio");
-
-    // Reproducir video con audio
-    video.muted = false; // activar audio
+    video.muted = false; // o true si quieres autoplay sin audio
     await video.play();
 
-    // Crear textura desde el video
     const texture = await viewer.createTexture(video);
 
-    // Aplicar la textura al material del plano
-    const material = viewer.model.materials.find(mat => mat.name === "Material.006");
-    if (!material) {
-      console.error("No se encontró 'Material.006'");
-      return;
+    // 🔹 Hack de prueba: aplicar video a todos los materiales
+    viewer.model.materials.forEach(mat => {
+      mat.pbrMetallicRoughness.setBaseColorTexture(texture);
+      mat.pbrMetallicRoughness.setMetallicFactor(0);
+      mat.pbrMetallicRoughness.setRoughnessFactor(1);
+    });
+
+    console.log("Video aplicado a todos los materiales. Ahora revisa si se ve en el plano.");
+
+    if(viewer.canActivateAR) {
+      viewer.activateAR();
+    }
+
+  } catch (e) {
+    console.error("Error aplicando video:", e);
+  }
+});
     }
 
     material.pbrMetallicRoughness.setBaseColorTexture(texture);
