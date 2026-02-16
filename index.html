@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Museo AR - Estabilidad de Roca</title>
+  <title>Museo AR - Estabilidad Máxima 1.49</title>
   
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
@@ -23,9 +23,9 @@
   <button id="startBtn">Abrir Ventana del Tiempo</button>
 
   <a-scene 
-    mindar-image="imageTargetSrc: ./marker.mind; autoStart: false; missTolerance: 1; filterMinCF: 0.00000001; filterBeta: 1000;" 
+    mindar-image="imageTargetSrc: ./marker.mind; autoStart: false; missTolerance: 1; filterMinCF: 0.00001; filterBeta: 10000;" 
     embedded 
-    renderer="colorManagement: true, antialias: true, alpha: true" 
+    renderer="colorManagement: true, antialias: true, alpha: true, precision: medium" 
     vr-mode-ui="enabled: false" 
     device-orientation-permission-ui="enabled: false">
     
@@ -40,8 +40,8 @@
         id="videoPlane" 
         width="0.85" 
         height="1.1" 
-        scale="1.57 1.57 1.57"
-        position="0 0 0.05" 
+        scale="1.49 1.49 1.49"
+        position="0 0 0.1" 
         material="src: #damaVideo; shader: flat; transparent: true; alphaTest: 0.5;">
       </a-plane>
     </a-entity>
