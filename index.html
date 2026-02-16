@@ -30,7 +30,7 @@
 </head>
 <body>
 
-<button id="playVideoBtn">Reproducir Video AR</button>
+<button id="playVideoBtn">Reproducir Audio/Video</button>
 
 <a-scene mindar="imageTargetSrc: marker.mind;" embedded color-space="sRGB" vr-mode-ui="enabled: false">
 
@@ -44,7 +44,7 @@
              rotation="-90 0 0"
              width="20"
              height="15"
-             material="src: #videoTexture">
+             material="color: #ffffff; src: #videoTexture">
     </a-plane>
   </a-entity>
 
@@ -59,10 +59,11 @@
 const videoEl = document.querySelector("#videoTexture");
 const playBtn = document.querySelector("#playVideoBtn");
 
+// Botón solo para activar audio/video
 playBtn.addEventListener("click", async () => {
   try {
-    await videoEl.play();       // Reproducir video con audio
-    playBtn.style.display = "none"; // Ocultar botón
+    await videoEl.play();
+    playBtn.style.display = "none";
   } catch(err) {
     console.error("Error reproduciendo video:", err);
   }
